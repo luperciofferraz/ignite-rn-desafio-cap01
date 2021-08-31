@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { Header } from '../components/Header';
-import { Task, TasksList } from '../components/TasksList';
+import { Task, ChangeTaskData } from '../components/TaskItem';
+import { TasksList } from '../components/TasksList';
 import { TodoInput } from '../components/TodoInput';
 
 export function Home() {
@@ -34,13 +35,25 @@ export function Home() {
     const updatedTasks = tasks.map(task => ({ ...task }))
     const taskToChange = updatedTasks.find(task => task.id === id);
 
-    if (taskToChange !== undefined) {
-      const index = updatedTasks.indexOf(taskToChange);
-      taskToChange.done = !taskToChange.done;
-      updatedTasks[index] = taskToChange;
-      setTasks(updatedTasks);
-    }
+    if (!taskToChange)
+      return;
     
+    taskToChange.done = !taskToChange.done;
+    setTasks(updatedTasks);
+    
+  }
+
+  function handleEditTask(taskData: ChangeTaskData) {
+
+    const updatedTasks = tasks.map(task => ({ ...task }))
+    const taskToChange = updatedTasks.find(task => task.id === taskData.taskId);
+
+    if (!taskToChange)
+      return;
+    
+    taskToChange.title = taskData.taskNewTitle;
+    setTasks(updatedTasks);
+
   }
 
   function handleRemoveTask(id: number) {
@@ -79,6 +92,7 @@ export function Home() {
         tasks={tasks} 
         toggleTaskDone={handleToggleTaskDone}
         removeTask={handleRemoveTask} 
+        editTask={handleEditTask}
       />
     
     </View>
